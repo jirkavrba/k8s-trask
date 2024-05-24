@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.3.8"
@@ -26,7 +28,7 @@ dependencies {
 
 
 application {
-    mainClass = "dev.vrba.slack.Application"
+    mainClass = "dev.vrba.k8s.Application"
 }
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
@@ -40,7 +42,7 @@ micronaut {
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("dev.vrba.slack.*")
+        annotations("dev.vrba.k8s.*")
     }
     aot {
         // Please review carefully the optimizations enabled below
@@ -56,6 +58,9 @@ micronaut {
     }
 }
 
+tasks.named<DockerBuildImage>("optimizedDockerBuildNative") {
+    images = setOf("ghcr.io/jirkavrba/k8s-trask/sample-web-app")
+}
 
 tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
     jdkVersion = "21"
